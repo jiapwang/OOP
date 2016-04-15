@@ -1,3 +1,6 @@
+//Google Code Jam 2010
+//Problem A. Store Credit
+
 import java.io.*;
 import java.util.Scanner;
 
@@ -14,7 +17,7 @@ public class StoreCredit {
 		
 		//try opening input file
 		try {
-			input = new Scanner (new File("A-small-practice.in"));
+			input = new Scanner (new File("StoreCredit-small-practice.in"));
 		}
 			catch (Exception e){
 				System.out.println("File Does Not Exist At The Path Provided!");
@@ -48,8 +51,8 @@ public class StoreCredit {
 			writer.print("Case #" + (i + 1) + ": ");
 			findCredit(intItems, C, I, writer);
 		}
-		System.out.println("Success!!");
 		writer.close();
+		System.out.println("Success!!");	
 	}
 	
 	/*

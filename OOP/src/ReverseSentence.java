@@ -1,3 +1,6 @@
+//Google Code Jam 2010 
+//Problem B. Reverse Words
+
 import java.io.*;
 import java.util.Scanner;
 
@@ -11,7 +14,7 @@ public class ReverseSentence {
 		
 		//try opening input file
 		try {
-			input = new Scanner (new File("B-small-practice.in"));
+			input = new Scanner (new File("ReverseSentence-small-practice.in"));
 		}
 			catch (Exception e){
 				System.out.println("File Does Not Exist At The Path Provided!");
@@ -47,8 +50,9 @@ public class ReverseSentence {
 			//System.out.println(reverse);
 		}
 		
-		System.out.println("Success!!!!");
 		writer.close();
+		System.out.println("Success!!!!");
+		
 				
 		/*
 		 * OUTPUT:
