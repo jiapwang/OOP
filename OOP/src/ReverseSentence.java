@@ -1,5 +1,6 @@
 //Google Code Jam 2010 
 //Problem B. Reverse Words
+//https://code.google.com/codejam/contest/351101/dashboard#s=p1
 
 import java.io.*;
 import java.util.Scanner;
