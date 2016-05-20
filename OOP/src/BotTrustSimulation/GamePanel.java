@@ -5,26 +5,21 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements ActionListener, KeyListener{
-	static final int orange_row1_Y = 50; 	//first orange row Y-value
-	static final int orange_row2_Y = 150;	//second orange row Y-value
-	static final int blue_row1_Y = 350;	  //first blue row Y-value
-	static final int blue_row2_Y = 450;	  //second blue row Y-value
+public class GamePanel extends JPanel implements ActionListener {
+	static final int row1_Y = 50; 	//first row buttons Y-value
+	static final int row2_Y = 150;	//second row buttons Y-value
 	static final int robotSize = 24;	 //
 	
 	Timer t;
 	
 	Bot OrangeRobot;
 	Bot BlueRobot;
-	Button [] orangeButtons = new Button [100];
-	Button [] blueButtons = new Button [100];
+	Button [] Buttons = new Button [100];
 	int xArr [] = new int [50];
 	
 	static ArrayList<String> botlst = new ArrayList<String>();
@@ -35,19 +30,18 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	
 	
 	GamePanel () {
-		setBackground(Color.gray);
-		t = new Timer(400,this); 
+		t = new Timer(1000,this); 
 		OrangeRobot = new Bot ('O');
 		BlueRobot = new Bot ('B');
 		
 		botlst.add("O");
-		buttonlst.add(2);
+		buttonlst.add(5);
 		botlst.add("O");
-		buttonlst.add(100);
-		//botlst.add("B");
-		//buttonlst.add(2);
+		buttonlst.add(20);
 		botlst.add("B");
 		buttonlst.add(100);
+		botlst.add("B");
+		buttonlst.add(47);
 		
 		for (int i = 0; i < 50; i++) {
 			xArr[i] = i * 25; 
@@ -55,21 +49,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		
 		for (int i = 0; i < 100; i++) {
 			if (i<50)
-			orangeButtons[i] = new Button(xArr[i], 50);
-			
+				Buttons[i] = new Button(xArr[i], 50);
 			else {
-				orangeButtons[i] = new Button (xArr[i-50], 150);
+				Buttons[i] = new Button (xArr[i-50], 150);
 			}
 		}
 		
-		for (int i = 0; i < 100; i++) {
-			if (i<50)
-			blueButtons[i] = new Button(xArr[i], 350);
-			
-			else {
-				blueButtons[i] = new Button (xArr[i-50], 450);
-			}
-		}
 	}
 	
 	@Override
@@ -77,45 +62,39 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		super.paintComponent(g);
 		
 		
-		g.setColor(Color.ORANGE);
+		g.setColor(Color.GRAY);
 		for (int i = 0; i <100; i++) {
-			g.fillOval(orangeButtons[i].getX(), orangeButtons[i].getY(), orangeButtons[i].getButtonSize(), orangeButtons[i].getButtonSize());
+			g.fillRect(Buttons[i].getX(), Buttons[i].getY(), Buttons[i].getButtonSize(), Buttons[i].getButtonSize());
 		}
 		
+		g.setColor(Color.orange);
 		if(OrangeRobot.getPos() <= 50)
-			g.fillRect(xArr[OrangeRobot.getPos()-1], orange_row1_Y+30, robotSize, robotSize);
+			g.fillOval(xArr[OrangeRobot.getPos()-1], row1_Y, robotSize, robotSize);
 		else {
-			g.fillRect(xArr[OrangeRobot.getPos()-51], orange_row2_Y+30, robotSize, robotSize);
+			g.fillOval(xArr[OrangeRobot.getPos()-51], row2_Y, robotSize, robotSize);
 		}
 		
 		g.setColor(Color.BLUE);
-		
-		for (int i = 0; i < 100; i++) {
-			g.fillOval(blueButtons[i].getX(), blueButtons[i].getY(), blueButtons[i].getButtonSize(), blueButtons[i].getButtonSize());
-		}
-		
 		if (BlueRobot.getPos() <= 50)
-			g.fillRect(xArr[BlueRobot.getPos()-1], blue_row1_Y+30, robotSize, robotSize);
+			g.fillOval(xArr[BlueRobot.getPos()-1], row1_Y, robotSize, robotSize);
 		else {
-			g.fillRect(xArr[BlueRobot.getPos()-51], blue_row2_Y+30, robotSize, robotSize);
+			g.fillOval(xArr[BlueRobot.getPos()-51], row2_Y, robotSize, robotSize);
 		}
 		
 		g.setFont(new Font("default", Font.BOLD, 12));
 		g.setColor(Color.BLACK);
 		for (int i = 1; i <= 50; i++) {
-			g.drawString(Integer.toString(i), xArr[i-1], orange_row1_Y);
-			g.drawString(Integer.toString(i), xArr[i-1], blue_row1_Y);
+			g.drawString(Integer.toString(i), xArr[i-1], row1_Y);
 		}
 		
 		for (int i = 51; i <= 100; i++) {
-			g.drawString(Integer.toString(i), xArr[i-51], orange_row2_Y);
-			g.drawString(Integer.toString(i), xArr[i-51], blue_row2_Y);
+			g.drawString(Integer.toString(i), xArr[i-51], row2_Y);
 		}
 		
 		g.setFont(new Font("default", Font.BOLD,24));
-		g.drawString("Time: " + Integer.toString(time) + " | "+ turn_Message, 300, 550);
+		g.drawString("Time: " + Integer.toString(time) + " | "+ turn_Message, 300, 230);
 		if (botlst.isEmpty()) {
-			g.drawString("Simulation Complete", 500, 600);
+			g.drawString("Simulation Complete", 500, 280);
 		}
 	}
 
@@ -197,32 +176,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		
 	void go() {
 		t.start();
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyPressed(KeyEvent p) {
-		int keyPressed = p.getKeyCode();
-		
-		//Press space to pause
-		if (keyPressed == KeyEvent.VK_6) {
-			if (t.isRunning())
-				t.stop();
-			else
-				t.start();
-		}
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 			
 }
