@@ -5,7 +5,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
@@ -13,60 +15,51 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements ActionListener {
 	static final int row1_Y = 50; 	//first row buttons Y-value
 	static final int row2_Y = 150;	//second row buttons Y-value
-	static final int robotSize = 24;	 //
+	static final int robotSize = 24;	//size of the robot
 	
 	Timer t;
 	
-	Bot OrangeRobot;
-	Bot BlueRobot;
-	Button [] Buttons = new Button [100];
-	int xArr [] = new int [50];
+	static Bot OrangeRobot;	//Orange Bot object
+	static Bot BlueRobot;	//Blue Bot object 
 	
-	static ArrayList<String> botlst = new ArrayList<String>();
-	static ArrayList<Integer> buttonlst = new ArrayList<Integer>();
+	Button [] Buttons = new Button [100];	//array of Button Objects
+	int xArr [] = new int [50];	//array of the x-coordinates of the buttons
+	
+	static ArrayList<String> botlst = new ArrayList<String>();	//ArrayList holding the Robot push order
+	static ArrayList<Integer> buttonlst = new ArrayList<Integer>();	//ArrayList holding the Button push order
 	
 	int time  = 0; 
-	String turn_Message = "Orange start at button 1 | Blue start at button 1";
-	
+	String turn_Message = "Orange start at button 1 | Blue start at button 1";	 
 	
 	GamePanel () {
-		t = new Timer(1000,this); 
-		OrangeRobot = new Bot ('O');
+		t = new Timer(500,this); 	
+		OrangeRobot = new Bot ('O');	
 		BlueRobot = new Bot ('B');
 		
-		botlst.add("O");
-		buttonlst.add(5);
-		botlst.add("O");
-		buttonlst.add(20);
-		botlst.add("B");
-		buttonlst.add(100);
-		botlst.add("B");
-		buttonlst.add(47);
-		
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 50; i++) {	//fill out the xArr array 
 			xArr[i] = i * 25; 
 		}
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 100; i++) {		//initalize the Buttons with the their positions
 			if (i<50)
 				Buttons[i] = new Button(xArr[i], 50);
 			else {
 				Buttons[i] = new Button (xArr[i-50], 150);
 			}
 		}
-		
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		
+		//paint the 2 rows of 50 buttons
 		g.setColor(Color.GRAY);
 		for (int i = 0; i <100; i++) {
 			g.fillRect(Buttons[i].getX(), Buttons[i].getY(), Buttons[i].getButtonSize(), Buttons[i].getButtonSize());
 		}
 		
+		//paint the location of the orange robot
 		g.setColor(Color.orange);
 		if(OrangeRobot.getPos() <= 50)
 			g.fillOval(xArr[OrangeRobot.getPos()-1], row1_Y, robotSize, robotSize);
@@ -74,6 +67,7 @@ public class GamePanel extends JPanel implements ActionListener {
 			g.fillOval(xArr[OrangeRobot.getPos()-51], row2_Y, robotSize, robotSize);
 		}
 		
+		//paint the location of the blue robot
 		g.setColor(Color.BLUE);
 		if (BlueRobot.getPos() <= 50)
 			g.fillOval(xArr[BlueRobot.getPos()-1], row1_Y, robotSize, robotSize);
@@ -81,6 +75,7 @@ public class GamePanel extends JPanel implements ActionListener {
 			g.fillOval(xArr[BlueRobot.getPos()-51], row2_Y, robotSize, robotSize);
 		}
 		
+		//paint the number of the buttons 1-100
 		g.setFont(new Font("default", Font.BOLD, 12));
 		g.setColor(Color.BLACK);
 		for (int i = 1; i <= 50; i++) {
@@ -99,14 +94,12 @@ public class GamePanel extends JPanel implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == t) {
-			if(botlst.isEmpty()) {
-				t.stop();
-			}
-			else {
-				tick();
-			}
+	public void actionPerformed(ActionEvent e) {		
+		if(botlst.isEmpty()) {
+			t.stop();
+		}
+		else {
+			tick();
 		}
 	}
 	
@@ -118,6 +111,11 @@ public class GamePanel extends JPanel implements ActionListener {
 		int positionInQueue;
 		int button;
 		
+		/*
+		 * Look for the first occurrence of "O" in botlst, take the index of that occurrence
+		 * go to that index in buttonlst to find the button it needs to press and work towards 
+		 * pushing that button. If "O" is not found, don't move the robot.
+		 */
 		if (botlst.indexOf("O") != -1) {
 			positionInQueue = botlst.indexOf("O");
 			button = (int) buttonlst.get(positionInQueue);
@@ -142,6 +140,11 @@ public class GamePanel extends JPanel implements ActionListener {
 		
 		turn_Message += " | ";
 		
+		/*
+		 * Look for the first occurrence of "B" in botlst, take the index of that occurrence
+		 * go to that index in buttonlst to find the button it needs to press and work towards 
+		 * pushing that button. If "B" is not found, don't move the robot.
+		 */
 		if (botlst.indexOf("B") != -1) {
 			positionInQueue = botlst.indexOf("B");
 			button = (int) buttonlst.get(positionInQueue);
@@ -164,17 +167,16 @@ public class GamePanel extends JPanel implements ActionListener {
 			turn_Message += BlueRobot.dontMove();
 		}
 		
-		System.out.println();
-		
+		//if a button has been pressed remove the first element from botlst and buttonlst
 		if (btnPressed) {
 			botlst.remove(0);
 			buttonlst.remove(0);
-		}
-			
-		repaint();
+		}	
+		repaint();	//repaint the panel 
 	}
-		
-	void go() {
+	
+	//start the timer
+	void go() {		
 		t.start();
 	}
 			
